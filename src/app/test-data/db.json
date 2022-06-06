@@ -1,0 +1,32 @@
+[
+    {
+        "id": "100",
+        "companyCode": "CTS",
+        "companyName": "Cognizant",
+        "companyCeoName": "Boopathi",
+        "companyTurnover": 45632,
+        "companyWebsite": "cts.com",
+        "companyStockExchange": "NSE",
+        "latestStockPrice": 90
+    },
+    {
+        "id": "101",
+        "companyCode": "TCS",
+        "companyName": "Tata",
+        "companyCeoName": "Boopathi 1",
+        "companyTurnover": 586,
+        "companyWebsite": "tata.com",
+        "companyStockExchange": "NSE",
+        "latestStockPrice": 52
+    },
+    {
+        "id": "103",
+        "companyCode": "Infiy",
+        "companyName": "Infosys",
+        "companyCeoName": "Boopathi 2",
+        "companyTurnover": 874,
+        "companyWebsite": "infosys.com",
+        "companyStockExchange": "BSE",
+        "latestStockPrice": 54
+    }
+]

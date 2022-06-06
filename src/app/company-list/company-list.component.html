@@ -1,0 +1,34 @@
+<app-menubar></app-menubar>
+<div>
+    <h2>Company List</h2>
+    <label *ngIf="companyList === undefined || companyList.length <= 0" class="error-message">{{errorMessage}}</label>
+
+    <table class="table table-striped " *ngIf="companyList && companyList.length > 0">
+        <thead>
+            <tr class="table-primary">
+                <th>Company Code</th>
+                <th>Company Name</th>
+                <th>Company CEO Name</th>
+                <th>Company Turnover</th>
+                <th>Company Website</th>
+                <th>Company Stock Exchange</th>
+                <th>Latest Stock Price</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let companyDetail of companyList'>
+                <td>{{companyDetail.companyCode}}</td>
+                <td>{{companyDetail.companyName}}</td>
+                <td>{{companyDetail.companyCeoName}}</td>
+                <td>{{companyDetail.companyTurnover}}</td>
+                <td>{{companyDetail.companyWebsite}}</td>
+                <td>{{companyDetail.companyStockExchange}}</td>
+                <td>{{companyDetail.latestStockPrice}}</td>
+                <td>
+                    <button type="button" (click)="deleteCompany(companyDetail)" class="btn btn-outline-danger">Delete Company</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

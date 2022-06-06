@@ -1,0 +1,7 @@
+.navbar-nav >a:hover,.navbar-nav >a:focus {
+    background-color: white;
+    color: #0a0a0a;
+}
+.logo{
+    width: 15%;
+}

@@ -1,0 +1,60 @@
+<app-menubar></app-menubar>
+<h2>Basic Search</h2>
+<div>
+    <div class="center">
+        <div class="row">
+            <div class="col">
+                <label class="form-label" for="search">Enter company code</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <input type="text" [(ngModel)]="companyCode" #search="ngModel" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted && search.errors }" required />
+                <div class="invalid-feedback" *ngIf="submitted && search.errors">
+                    Please enter validate company code.
+                </div>
+            </div>
+            <div class="col">
+                <button type="button" (click)="companySearch()" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="py-3">
+        <div *ngIf="errorMessage" class="row">
+            <div class="col">
+                <div class="alert alert-warning">
+                    <strong>warning! </strong>{{ errorMessage }}
+                </div>
+            </div>
+        </div>
+        <table class="table table-striped " *ngIf="companyDetail && !submitted">
+            <thead>
+                <tr class="table-primary">
+                    <th>Company Code</th>
+                    <th>Company Name</th>
+                    <th>Company CEO Name</th>
+                    <th>Company Turnover</th>
+                    <th>Company Website</th>
+                    <th>Company Stock Exchange</th>
+                    <th>Latest Stock Price</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{companyDetail?.companyCode}}</td>
+                    <td>{{companyDetail?.companyName}}</td>
+                    <td>{{companyDetail?.companyCeoName}}</td>
+                    <td>{{companyDetail?.companyTurnover}}</td>
+                    <td>{{companyDetail?.companyWebsite}}</td>
+                    <td>{{companyDetail?.companyStockExchange}}</td>
+                    <td>{{companyDetail?.latestStockPrice}}</td>
+                    <td>
+                        <button type="button" (click)="deleteCompany(companyDetail)" class="btn btn-outline-danger">Delete Company</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

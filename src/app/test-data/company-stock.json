@@ -1,0 +1,22 @@
+[
+    {
+        "stockList": [
+            {
+                "date": "2022/02/26",
+                "time": "10.30",
+                "price": 44,
+                "companyCode": "CTS"
+            },
+            {
+                "date": "2022/03/26",
+                "time": "11.30",
+                "price": 58,
+                "companyCode": "CTS"
+            }
+        ],
+        "companyName": "CTS",
+        "maxStockPrice": 542,
+        "minStockPrice": 963,
+        "avgStockPrice": 123
+    }
+]
