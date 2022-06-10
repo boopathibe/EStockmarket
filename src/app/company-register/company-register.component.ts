@@ -43,7 +43,7 @@ export class CompanyRegisterComponent implements OnInit {
     const data = this.companyRegisterForm.value as Company;
     this.submitted = false;
     this.companyDetailsService.post(data).
-      subscribe((response) => {
+      subscribe((response:number) => {
         if (response === 1) {
           this.successMessage = "Company details added successfully";
           this.router.navigate(["/landing"]);

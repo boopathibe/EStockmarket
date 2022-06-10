@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs';
+import { catchError, map } from 'rxjs';
 import { Company } from '../models/company';
 import { CompanyDetailsService } from '../Services/company-details.service';
 
