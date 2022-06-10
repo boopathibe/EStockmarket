@@ -36,6 +36,7 @@ export class CompanyDetailsService {
 
   delete(companyCode: string): Observable<number> {
     // 
+    // test
     return of()
   }
 }
