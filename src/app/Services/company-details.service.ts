@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, map } from 'rxjs';
+import { Observable, of, map, catchError } from 'rxjs';
 import { Company } from '../models/company';
 import { AuthenticationService } from './authentication.service';
 import companyList from '../test-data/db.json';
@@ -20,15 +20,19 @@ export class CompanyDetailsService {
 
     const apiUrl = companyApiBaseUrl + apiEndpoint.addCompanyEndpoint;
     const companyRequest = {
-      Code: companyDetails.companyCode,
-      Name: companyDetails.companyName,
-      CeoName: companyDetails.companyCeoName,
-      TurnOver: companyDetails.companyTurnover as number,
-      Website: companyDetails.companyWebsite,
-      Exchange: companyDetails.companyStockExchange,
+      code: companyDetails.companyCode,
+      name: companyDetails.companyName,
+      ceoName: companyDetails.companyCeoName,
+      turnOver: companyDetails.companyTurnover as number,
+      website: companyDetails.companyWebsite,
+      exchange: companyDetails.companyStockExchange,
     };
-    return this.httpClient.post<number>(apiUrl, JSON.stringify(companyRequest)).pipe();
-  }
+    return this.httpClient.post<number>(apiUrl, companyRequest, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        })
+      }).pipe()
+};
 
   get(): Observable<Company[]> {
     // add token into header
@@ -37,25 +41,27 @@ export class CompanyDetailsService {
     var companyList: Company[];
     const apiUrl = companyApiBaseUrl + apiEndpoint.getAllCompanyEndpoint;
 
-    const ss = this.httpClient.get<CompanyResponse[]>(apiUrl).
+    const companyResponse = this.httpClient.get<CompanyResponse[]>(apiUrl).
       pipe(map(
         (companyDetails: CompanyResponse[]) => {
-          return this.test(companyDetails)
+          return this.getCompanyDetails(companyDetails)
         }));
-        return ss;
+        return companyResponse;
   }
 
-  private test(companyDetails: CompanyResponse[]): Company[] {
+  private getCompanyDetails(companyDetails: CompanyResponse[]): Company[] {
     var companyList: Company[] = [];
     if (companyDetails) {
-      companyList.push(new Company(
-        companyDetails[0].code,
-        companyDetails[0].name,
-        companyDetails[0].ceoName,
-        companyDetails[0].turnOver,
-        companyDetails[0].website,
-        companyDetails[0].exchange[0]
-      ));
+      companyDetails.forEach(element => {
+        companyList.push(new Company(
+            element.code,
+            element.name,
+            element.ceoName,
+            element.turnOver,
+            element.website,
+            element.exchange[0]
+          ));
+      });
     }
     return companyList;
   }
@@ -69,9 +75,11 @@ export class CompanyDetailsService {
     return of(data[0]);
   }
 
-  delete(companyCode: string): Observable<number> {
-    // 
-    // test
-    return of()
+  delete(companyCode: string): any {
+    const apiUrl = companyApiBaseUrl + apiEndpoint.deleteCompanyEndpoint;
+    const ss = apiUrl+"/"+companyCode;
+    this.httpClient.delete(ss).subscribe(data => {
+      console.log("service" + data);
+    });
   }
 }

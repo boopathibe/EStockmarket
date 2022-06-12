@@ -4,11 +4,11 @@ import { Company } from '../models/company';
 import { CompanyDetailsService } from '../Services/company-details.service';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+  selector: 'app-basic-search',
+  templateUrl: './basic-search.component.html',
+  styleUrls: ['./basic-search.component.css']
 })
-export class SearchComponent implements OnInit {
+export class BasicSearchComponent implements OnInit {
 
   companyDetail?: Company;
   companyCode?: string;
@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  companySearch() {
+  basicSearch() {
     this.companyDetail = undefined;
     this.errorMessage = undefined;
     if (this.companyCode !== undefined && this.companyCode !== "") {
@@ -34,16 +34,6 @@ export class SearchComponent implements OnInit {
           this.errorMessage = "Data not found";
           return;
         });
-      // this.companyDetailsService.getById(this.companyCode).
-      //   pipe(
-      //     map((company: Company) => {
-      //       if (company !== undefined) {
-      //         this.companyDetail = company;
-      //         return;
-      //       }
-      //       this.errorMessage = "No data Found";
-      //       return;
-      //     }));
     } else {
       this.submitted = true;
     }
@@ -52,8 +42,17 @@ export class SearchComponent implements OnInit {
   deleteCompany(companyDetail: Company) {
     const companyCode = companyDetail.companyCode || "";
     this.companyDetailsService.delete(companyCode).
-      subscribe((res) => {
-
+      subscribe((res: any) => {
+        console.log(res);
+        this.companyDetailsService.get().
+        subscribe((res : any) => {
+          if (res !== undefined) {
+            this.companyDetail = res;
+            return;
+          }
+          this.errorMessage = "Data not found";
+          return;
+        });
       });
   }
 }

@@ -29,24 +29,13 @@ export class CompanyListComponent implements OnInit {
         this.errorMessage = "No Company registered yet!!";
         return;
       });
-
-    // this.companyDetailsService.get().
-    //   pipe(
-    //     map((companyList: Company[]) => {
-    //       if (companyList !== undefined) {
-    //         this.companyList = companyList;
-    //         return;
-    //       }
-    //       this.errorMessage = "No Company registered yet!!";
-    //       return;
-    //     }));
   }
 
   deleteCompany(companyDetail: Company) {
     const companyCode = companyDetail.companyCode || "";
     this.companyDetailsService.delete(companyCode).
-      subscribe((res) => {
-
+      subscribe((res: any) => {
+        console.log(res);
       });
   }
 }
