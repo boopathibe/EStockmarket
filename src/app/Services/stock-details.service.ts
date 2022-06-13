@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 import { CompanySearchDetail } from '../models/company-search-detail';
 import { AuthenticationService } from './authentication.service';
 import { apiEndpoint, stockApiBaseUrl } from '../common/constant';
@@ -25,6 +25,10 @@ export class StockDetailsService {
       pipe(map(
         (companyDetails: CompanySearchDetail) => {
           return this.getCompanyStockDetails(companyDetails, companyCode);
+        }),
+        catchError((error: HttpErrorResponse) => {
+          console.log(error.statusText);
+          throw new Error(error.error);
         }));
     return companySearchDetailResponse;
   }
@@ -41,7 +45,10 @@ export class StockDetailsService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
-    }).pipe();
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      console.log(error.statusText);
+      throw new Error(error.error);
+    }));
   }
 
   private getCompanyStockDetails(companyDetail: CompanySearchDetail, companyCode: string): CompanySearchDetail {

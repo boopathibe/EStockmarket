@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, map, catchError } from 'rxjs';
 import { Company } from '../models/company';
@@ -32,7 +32,10 @@ export class CompanyDetailsService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
-    }).pipe();
+    }).pipe(catchError((error: HttpErrorResponse) => {
+      console.log(error.statusText);
+      throw new Error(error.error);
+    }));
   }
 
   get(): Observable<Company[] | undefined> {
@@ -43,6 +46,9 @@ export class CompanyDetailsService {
       pipe(map(
         (companyDetails: CompanyResponse[]) => {
           return this.getAllCompanyDetails(companyDetails)
+        }), catchError((error: HttpErrorResponse) => {
+          console.log(error.statusText);
+          throw new Error(error.error);
         }));
     return companyResponse;
   }
@@ -56,13 +62,19 @@ export class CompanyDetailsService {
       pipe(map(
         (companyDetails: CompanyResponse) => {
           return this.getCompanyDetails(companyDetails);
+        }), catchError((error: HttpErrorResponse) => {
+          console.log(error.statusText);
+          throw new Error(error.error);
         }));
     return companyResponse;
   }
 
   delete(companyCode: string): Observable<number> {
     const apiUrl = companyApiBaseUrl + apiEndpoint.deleteCompanyEndpoint + "/" + companyCode;
-    return this.httpClient.delete<number>(apiUrl).pipe();
+    return this.httpClient.delete<number>(apiUrl).pipe(catchError((error: HttpErrorResponse) => {
+      console.log(error.statusText);
+      throw new Error(error.error);
+    }));
   }
 
   private getAllCompanyDetails(companyDetails: CompanyResponse[]): Company[] | undefined {
