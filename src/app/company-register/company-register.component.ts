@@ -29,6 +29,8 @@ export class CompanyRegisterComponent implements OnInit {
       companyStockExchange: ['', Validators.required]
     });
     this.companyStockExchangeList = ['NSE', 'BSE'];
+    this.successMessage = undefined;
+    this.errorMessage = undefined;
   }
 
   get formControl(): { [key: string]: AbstractControl } {
@@ -43,10 +45,14 @@ export class CompanyRegisterComponent implements OnInit {
     const data = this.companyRegisterForm.value as Company;
     this.submitted = false;
     this.companyDetailsService.post(data).
-      subscribe((response:number) => {
-        if (response === 1) {
+      subscribe((response: number) => {
+        if (response === 201) {
           this.successMessage = "Company details added successfully";
-          this.router.navigate(["/landing"]);
+          this.companyRegisterForm.reset();
+          setTimeout(() => {            
+            this.router.navigate(["/companyList"]);
+          }, 1000);
+          return;          
         }
         this.errorMessage = "Error occurred";
       });

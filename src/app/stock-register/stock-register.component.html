@@ -1,29 +1,35 @@
 <app-menubar></app-menubar>
-<h2 class="adv-title">Add stock</h2>
-<form [formGroup]="addCompanyStockForm">
-    <div class="row">
-        <div class="col-sm-3">
-            <label class="form-label" for="compcode">Company Code</label>
-            <select class="form-control" formControlName="companyCode"
-                [ngClass]="{ 'is-invalid': submitted && formControl['companyCode'].errors}">
-                <option>Select Company Code</option>
-                <option *ngFor="let company of companyList">{{company.companyCode}}</option>
-            </select>
-            <div class="invalid-feedback" *ngIf="submitted && formControl['companyCode'].errors">
-                Please select the company code
+<div *ngIf="successMessage || errorMessage" role="alert" class="alert"
+    [ngClass]="{ 'alert-success':successMessage, 'alert-danger':errorMessage}">
+    {{successMessage}}{{errorMessage}}
+</div>
+<div *ngIf="companyList.length>0">
+    <h2 class="adv-title">Add stock</h2>
+    <form [formGroup]="addCompanyStockForm">
+        <div class="row">
+            <div class="col-sm-3">
+                <label class="form-label" for="compcode">Company Code</label>
+                <select class="form-control" formControlName="companyCode"
+                    [ngClass]="{ 'is-invalid': submitted && formControl['companyCode'].errors}">
+                    <option>Select Company Code</option>
+                    <option *ngFor="let company of companyList">{{company.companyCode}}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="submitted && formControl['companyCode'].errors">
+                    Please select the company code
+                </div>
             </div>
-        </div>
 
-        <div class="col-sm-3">
-            <label class="form-label" for="stockValue">Stock value</label>
-            <input type="number" formControlName="stockValue"
-                class="form-control" [ngClass]="{ 'is-invalid': submitted  && formControl['stockValue'].errors}" />
-            <div class="invalid-feedback" *ngIf="submitted && formControl['stockValue'].errors">
-                Please enter the stock value
+            <div class="col-sm-3">
+                <label class="form-label" for="stockValue">Stock value</label>
+                <input type="number" formControlName="stockValue" class="form-control"
+                    [ngClass]="{ 'is-invalid': submitted  && formControl['stockValue'].errors}" />
+                <div class="invalid-feedback" *ngIf="submitted && formControl['stockValue'].errors">
+                    Please enter the stock value
+                </div>
             </div>
-        </div>      
-        <div class="col-sm-3 pt-2">
-            <button type="submit" (click)="addStock()" class="btn btn-primary mt-4">Add</button>
+            <div class="col-sm-3 pt-2">
+                <button type="submit" (click)="addStock()" class="btn btn-primary mt-4">Add</button>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>

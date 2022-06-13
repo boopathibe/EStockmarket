@@ -17,6 +17,7 @@ export class StockRegisterComponent implements OnInit {
   companyName?: string;
   companyList!: Company[];
   errorMessage?: string;
+  successMessage?: string;
 
   constructor(private companyDetailsService: CompanyDetailsService, private stockDetailsService: StockDetailsService,
     private form: FormBuilder, private router: Router) { }
@@ -24,28 +25,21 @@ export class StockRegisterComponent implements OnInit {
   ngOnInit(): void {
     this.addCompanyStockForm = this.form.group({
       companyCode: ["", Validators.required],
-      stockValue: ["", Validators.required, Validators.pattern("^[0-9]*$")]
+      stockValue: ["", Validators.required]
     });
+    this.successMessage = undefined;
+    this.errorMessage = undefined;
+    this.companyList = [];
 
     this.companyDetailsService.get().
       subscribe(
-        (companyList: Company[]) => {
+        (companyList: Company[] | undefined) => {
           if (companyList !== undefined && companyList.length > 0) {
             this.companyList = companyList;
             return;
           }
-          this.errorMessage = 'No data Found';
+          this.errorMessage = 'No company registered yet!!';
         });
-
-    // this.companyDetailsService.get().
-    //   pipe(
-    //     map((companyList: Company[]) => {
-    //       if (companyList !== undefined && companyList.length > 0) {
-    //         this.companyList = companyList;
-    //         return;
-    //       }
-    //       this.errorMessage = 'No data Found';
-    //     }));
   }
 
   get formControl(): { [key: string]: AbstractControl } {
@@ -56,15 +50,19 @@ export class StockRegisterComponent implements OnInit {
     this.errorMessage = '';
     if (this.addCompanyStockForm.invalid) {
       this.submitted = true;
+      this.successMessage = undefined;
+      this.errorMessage = undefined;
       return;
     }
     this.submitted = false;
     const stock = this.addCompanyStockForm.value.stockValue;
     const companyCode = this.addCompanyStockForm.value.companyCode;
     this.stockDetailsService.add(companyCode, stock).
-      subscribe((res) => {
-        if (res) {
-          this.router.navigate(['/advanceSearch']);
+      subscribe((response: number) => {
+        if (response === 201) {
+          this.successMessage = "Company stock added successfully";
+          this.addCompanyStockForm.reset();
+          return;
         }
         this.errorMessage = "Stock not added.please try again later";
       });

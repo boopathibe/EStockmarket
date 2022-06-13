@@ -1,9 +1,11 @@
 <app-menubar></app-menubar>
-<div>
+<div *ngIf="successMessage || errorMessage" role="alert" class="alert"
+    [ngClass]="{ 'alert-success':successMessage, 'alert-danger':errorMessage}">
+    {{successMessage}}{{errorMessage}}
+</div>
+<div *ngIf="companyList && companyList.length > 0">
     <h2>Company List</h2>
-    <label *ngIf="companyList === undefined || companyList.length <= 0" class="error-message">{{errorMessage}}</label>
-
-    <table class="table table-striped " *ngIf="companyList && companyList.length > 0">
+    <table class="table table-striped ">
         <thead>
             <tr class="table-primary">
                 <th>Company Code</th>
@@ -26,7 +28,8 @@
                 <td>{{companyDetail.companyStockExchange}}</td>
                 <td>{{companyDetail.latestStockPrice}}</td>
                 <td>
-                    <button type="button" (click)="deleteCompany(companyDetail)" class="btn btn-outline-danger">Delete Company</button>
+                    <button type="button" (click)="deleteCompany(companyDetail)" class="btn btn-outline-danger">Delete
+                        Company</button>
                 </td>
             </tr>
         </tbody>

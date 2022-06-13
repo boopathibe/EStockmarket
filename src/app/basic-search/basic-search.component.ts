@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { map, Observable } from 'rxjs';
 import { Company } from '../models/company';
 import { CompanyDetailsService } from '../Services/company-details.service';
 
@@ -14,6 +13,7 @@ export class BasicSearchComponent implements OnInit {
   companyCode?: string;
   errorMessage?: string;
   submitted?: boolean;
+  successMessage?: string;
 
   constructor(private companyDetailsService: CompanyDetailsService) { }
 
@@ -23,6 +23,7 @@ export class BasicSearchComponent implements OnInit {
   basicSearch() {
     this.companyDetail = undefined;
     this.errorMessage = undefined;
+    this.successMessage = undefined;
     if (this.companyCode !== undefined && this.companyCode !== "") {
       this.submitted = false;
       this.companyDetailsService.getById(this.companyCode).
@@ -42,17 +43,15 @@ export class BasicSearchComponent implements OnInit {
   deleteCompany(companyDetail: Company) {
     const companyCode = companyDetail.companyCode || "";
     this.companyDetailsService.delete(companyCode).
-      subscribe((res: any) => {
-        console.log(res);
-        this.companyDetailsService.get().
-        subscribe((res : any) => {
-          if (res !== undefined) {
-            this.companyDetail = res;
-            return;
-          }
-          this.errorMessage = "Data not found";
+      subscribe((response: number) => {
+        if (response === 200) {
+          this.successMessage = "Company and stock details is deleted successfully!!.";
           return;
-        });
+        } else if (response === 404) {
+          this.errorMessage = "Data not found for the company" + companyCode + "!!!.";
+          return;
+        }
+        this.errorMessage = "Error occurred in the delete operation.please try again!!!.";
       });
   }
 }

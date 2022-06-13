@@ -1,25 +1,25 @@
-import { Stock } from "./stock";
+import { StockDetails } from "./stock";
 
 export class CompanySearchDetail {
-    stockList?: Stock[];
+    stocks?: StockDetails[];
     companyName?: string;
-    maxStockPrice?: number;
-    minStockPrice?: number;
-    avgStockPrice?: number;
+    maxPrice?: number;
+    minPrice?: number;
+    avgPrice?: number;
     errorMsg?: string;
 
     constructor(companyName: string,
-        stockList: Stock[],
-        maxStockPrice: number,
-        minStockPrice: number,
-        avgStockPrice: number,
-        errorMsg: string) {
+        stockList?: StockDetails[],
+        maxPrice?: number,
+        minPrice?: number,
+        avgPrice?: number,
+        errorMsg?: string) {
 
         this.companyName = companyName
-        this.stockList = stockList;
-        this.maxStockPrice = maxStockPrice;
-        this.minStockPrice = minStockPrice;
-        this.avgStockPrice = avgStockPrice;
+        this.stocks = stockList;
+        this.maxPrice = maxPrice;
+        this.minPrice = minPrice;
+        this.avgPrice = avgPrice;
         this.errorMsg = errorMsg;
     }
 }

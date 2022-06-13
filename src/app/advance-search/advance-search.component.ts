@@ -4,7 +4,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { map, Observable } from 'rxjs';
 import { Company } from '../models/company';
 import { CompanySearchDetail } from '../models/company-search-detail';
-import { Stock } from '../models/stock';
+import { StockDetails } from '../models/stock';
 import { CompanyDetailsService } from '../Services/company-details.service';
 import { StockDetailsService } from '../Services/stock-details.service';
 
@@ -16,7 +16,7 @@ import { StockDetailsService } from '../Services/stock-details.service';
 export class AdvanceSearchComponent implements OnInit {
 
   companyList!: Company[];
-  stockList?: Stock[];
+  stockList?: StockDetails[];
   companySearchDetail!: CompanySearchDetail;
   errorMessage?: string;
   minStockPrice?: number;
@@ -40,23 +40,13 @@ export class AdvanceSearchComponent implements OnInit {
 
     this.companyDetailsService.get().
       subscribe(
-        (companyList: Company[]) => {
+        (companyList: Company[] | undefined) => {
           if (companyList !== undefined && companyList.length > 0) {
             this.companyList = companyList;
             return;
           }
-          this.errorMessage = 'No data Found';
-        });
-
-    // this.companyDetailsService.get().
-    //   pipe(
-    //     map((companyList: Company[]) => {
-    //       if (companyList !== undefined && companyList.length > 0) {
-    //         this.companyList = companyList;
-    //         return;
-    //       }
-    //       this.errorMessage = 'No data Found';
-    //     }));
+          this.errorMessage = 'No company registered yet!!';
+        });  
   }
 
   get formControl(): { [key: string]: AbstractControl } {
@@ -76,8 +66,6 @@ export class AdvanceSearchComponent implements OnInit {
 
     if (!companyCode || !startDate || !endDate) {
       this.errorMessage = 'All the 3 fields are mandatory for search..';
-    } else if (startDate === endDate) {
-      this.errorMessage = 'Start date & end date can not be same..';
     }
     else if (startDate > endDate) {
       this.errorMessage = 'Start date must be before end date..';
@@ -88,28 +76,14 @@ export class AdvanceSearchComponent implements OnInit {
           if (searchDetail !== undefined) {
             this.companySearchDetail = searchDetail;
             this.companyName = searchDetail.companyName;
-            this.stockList = searchDetail.stockList;
-            this.minStockPrice = searchDetail.minStockPrice;
-            this.maxStockPrice = searchDetail.maxStockPrice;
-            this.avgStockPrice = searchDetail.avgStockPrice;
+            this.stockList = searchDetail.stocks;
+            this.minStockPrice = searchDetail.minPrice;
+            this.maxStockPrice = searchDetail.maxPrice;
+            this.avgStockPrice = searchDetail.avgPrice;
           } else {
             this.errorMessage = "Data not found";
           }
-        });
-
-      // this.stockDetailsService.getById(companyCode, startDate, endDate).
-      //   pipe(map((companySearchDetail: CompanySearchDetail) => {
-      //     if (companySearchDetail !== undefined) {
-      //       this.companySearchDetail = companySearchDetail;
-      //       this.stockList = companySearchDetail.stockList;
-      //       this.minStockPrice = companySearchDetail.minStockPrice;
-      //       this.maxStockPrice = companySearchDetail.maxStockPrice;
-      //       this.avgStockPrice = companySearchDetail.avgStockPrice;
-      //     } else {
-      //       this.errorMessage = "errorMsg from advSearch response";
-      //     }
-      //   }));
+        });      
     }
   }
-
 }

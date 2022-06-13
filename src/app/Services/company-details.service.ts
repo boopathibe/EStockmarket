@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of, map, catchError } from 'rxjs';
 import { Company } from '../models/company';
 import { AuthenticationService } from './authentication.service';
-import companyList from '../test-data/db.json';
 import { apiEndpoint, companyApiBaseUrl } from '../common/constant';
 import { CompanyResponse } from '../models/companyResponse';
 
@@ -11,6 +10,8 @@ import { CompanyResponse } from '../models/companyResponse';
   providedIn: 'root'
 })
 export class CompanyDetailsService {
+
+  private companyList!: Company[];
 
   constructor(private httpClient: HttpClient, private authenticationService: AuthenticationService) { }
 
@@ -25,61 +26,73 @@ export class CompanyDetailsService {
       ceoName: companyDetails.companyCeoName,
       turnOver: companyDetails.companyTurnover as number,
       website: companyDetails.companyWebsite,
-      exchange: companyDetails.companyStockExchange,
+      exchange: [companyDetails.companyStockExchange],
     };
-    return this.httpClient.post<number>(apiUrl, companyRequest, {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        })
-      }).pipe()
-};
+    return this.httpClient.post<number>(apiUrl, JSON.stringify(companyRequest), {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }).pipe();
+  }
 
-  get(): Observable<Company[]> {
+  get(): Observable<Company[] | undefined> {
     // add token into header
     var token = this.authenticationService.getBearerToken();
-
-    var companyList: Company[];
     const apiUrl = companyApiBaseUrl + apiEndpoint.getAllCompanyEndpoint;
-
     const companyResponse = this.httpClient.get<CompanyResponse[]>(apiUrl).
       pipe(map(
         (companyDetails: CompanyResponse[]) => {
-          return this.getCompanyDetails(companyDetails)
+          return this.getAllCompanyDetails(companyDetails)
         }));
-        return companyResponse;
-  }
-
-  private getCompanyDetails(companyDetails: CompanyResponse[]): Company[] {
-    var companyList: Company[] = [];
-    if (companyDetails) {
-      companyDetails.forEach(element => {
-        companyList.push(new Company(
-            element.code,
-            element.name,
-            element.ceoName,
-            element.turnOver,
-            element.website,
-            element.exchange[0]
-          ));
-      });
-    }
-    return companyList;
+    return companyResponse;
   }
 
   getById(companyCode: string): Observable<Company | undefined> {
     // add token into header
     var token = this.authenticationService.getBearerToken();
     companyCode = companyCode.toUpperCase();
-    var data = companyList as Company[];
-    data = data.filter(x => x.companyCode === companyCode);
-    return of(data[0]);
+    const apiUrl = companyApiBaseUrl + apiEndpoint.getCompanyEndpoint + "/" + companyCode;
+    const companyResponse = this.httpClient.get<CompanyResponse>(apiUrl).
+      pipe(map(
+        (companyDetails: CompanyResponse) => {
+          return this.getCompanyDetails(companyDetails);
+        }));
+    return companyResponse;
   }
 
-  delete(companyCode: string): any {
-    const apiUrl = companyApiBaseUrl + apiEndpoint.deleteCompanyEndpoint;
-    const ss = apiUrl+"/"+companyCode;
-    this.httpClient.delete(ss).subscribe(data => {
-      console.log("service" + data);
-    });
+  delete(companyCode: string): Observable<number> {
+    const apiUrl = companyApiBaseUrl + apiEndpoint.deleteCompanyEndpoint + "/" + companyCode;
+    return this.httpClient.delete<number>(apiUrl).pipe();
+  }
+
+  private getAllCompanyDetails(companyDetails: CompanyResponse[]): Company[] | undefined {
+    if (companyDetails) {
+      this.companyList = [];
+      companyDetails.forEach(element => {
+        this.companyList.push(new Company(
+          element.code,
+          element.name,
+          element.ceoName,
+          element.turnOver,
+          element.website,
+          element.exchange[0]
+        ));
+      });
+    }
+    return this.companyList;
+  }
+
+  private getCompanyDetails(companyDetails: CompanyResponse): Company | undefined {
+    var company = undefined;
+    if (companyDetails) {
+      company = new Company(
+        companyDetails.code,
+        companyDetails.name,
+        companyDetails.ceoName,
+        companyDetails.turnOver,
+        companyDetails.website,
+        companyDetails.exchange[0])
+    }
+    return company;
   }
 }

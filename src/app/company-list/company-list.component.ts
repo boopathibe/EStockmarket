@@ -12,21 +12,24 @@ export class CompanyListComponent implements OnInit {
 
   companyList!: Company[];
   errorMessage?: string;
+  successMessage?: string;
 
   constructor(private companyDetailsService: CompanyDetailsService) { }
 
   ngOnInit(): void {
+    this.successMessage = undefined;
+    this.errorMessage = undefined;
     this.getCompanyDetailLists();
   }
 
   getCompanyDetailLists() {
     this.companyDetailsService.get().
-      subscribe((companyList: Company[]) => {
-        if (companyList !== undefined) {
+      subscribe((companyList: Company[] | undefined) => {
+        if (companyList !== undefined && companyList.length > 0) {
           this.companyList = companyList;
           return;
         }
-        this.errorMessage = "No Company registered yet!!";
+        this.errorMessage = "No company registered yet!!";
         return;
       });
   }
@@ -34,8 +37,20 @@ export class CompanyListComponent implements OnInit {
   deleteCompany(companyDetail: Company) {
     const companyCode = companyDetail.companyCode || "";
     this.companyDetailsService.delete(companyCode).
-      subscribe((res: any) => {
-        console.log(res);
+      subscribe((response: number) => {
+        if (response === 200) {
+          this.successMessage = "Company and stock details is deleted successfully!!.";
+          setTimeout(() => {
+            this.getCompanyDetailLists();
+            this.successMessage = undefined;
+          }, 900);
+          return;
+        }
+        this.errorMessage = "Error occurred in the delete operation.please try again!!!.";
+        setTimeout(() => {
+          this.getCompanyDetailLists();
+          this.errorMessage = undefined;
+        }, 1000);
       });
   }
 }

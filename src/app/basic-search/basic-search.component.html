@@ -21,10 +21,11 @@
         </div>
     </div>
     <div class="py-3">
-        <div *ngIf="errorMessage" class="row">
+        <div *ngIf="successMessage || errorMessage" class="row">
             <div class="col">
-                <div class="alert alert-warning">
-                    <strong>warning! </strong>{{ errorMessage }}
+                <div role="alert" class="alert"
+                    [ngClass]="{ 'alert-success':successMessage, 'alert-danger':errorMessage}">
+                    {{successMessage}}{{errorMessage}}
                 </div>
             </div>
         </div>
@@ -51,7 +52,8 @@
                     <td>{{companyDetail?.companyStockExchange}}</td>
                     <td>{{companyDetail?.latestStockPrice}}</td>
                     <td>
-                        <button type="button" (click)="deleteCompany(companyDetail)" class="btn btn-outline-danger">Delete Company</button>
+                        <button type="button" (click)="deleteCompany(companyDetail)"
+                            class="btn btn-outline-danger">Delete Company</button>
                     </td>
                 </tr>
             </tbody>

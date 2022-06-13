@@ -1,4 +1,8 @@
 <app-menubar></app-menubar>
+<div *ngIf="successMessage || errorMessage" role="alert" class="alert"
+    [ngClass]="{ 'alert-success':successMessage, 'alert-danger':errorMessage}">
+    {{successMessage}}{{errorMessage}}
+</div>
 <h2>Add Company</h2>
 <form [formGroup]="companyRegisterForm">
     <div class="form-group">
