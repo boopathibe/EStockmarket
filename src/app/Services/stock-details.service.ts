@@ -17,7 +17,6 @@ export class StockDetailsService {
     // add token into header
     var token = this.authenticationService.getBearerToken();
     companyCode = companyCode.toUpperCase();
-    // yyyy-mm-dd
     const sDate = this.datePipe.transform(startDate, "yyyy-MM-dd");
     const eDate = this.datePipe.transform(endDate, "yyyy-MM-dd");
     const apiUrl = stockApiBaseUrl + apiEndpoint.getCompanyStockEndpoint + "/" + companyCode + "/" + startDate + "/" + endDate;
