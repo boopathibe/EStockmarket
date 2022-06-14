@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule  } from '@angular/common/http';
 import { CommonModule, DatePipe } from '@angular/common';
 import { StockRegisterComponent } from './stock-register/stock-register.component';
+import { CanActivateRouteGuard } from './Services/can-activate-route.guard.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { StockRegisterComponent } from './stock-register/stock-register.componen
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, CanActivateRouteGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

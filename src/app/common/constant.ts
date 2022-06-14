@@ -5,7 +5,7 @@ export const apiEndpoint = {
     deleteCompanyEndpoint: '/api/v1.0/market/company/delete',
     getCompanyStockEndpoint: '/api/v1.0/market/stock/get',
     addCompanyStockEndpoint: '/api/v1.0/market/stock/add',
-    authEndpoint: '/api/v1.0/market/api/auth/login'
+    authEndpoint: '/api/v1.0/market/auth/login'
 };
 
 export const companyApiBaseUrl = "http://localhost:4888";

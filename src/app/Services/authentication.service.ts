@@ -3,7 +3,7 @@ import { CacheService } from './cache.service';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
 import { LoginModel } from '../models/login-model';
 import { Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { AuthenticatedResponse } from '../models/auth-response-model';
 import { apiEndpoint, authApiBaseUrl } from '../common/constant';
 
@@ -16,11 +16,15 @@ export class AuthenticationService {
 
   login(loginModel: LoginModel): Observable<AuthenticatedResponse> {
     const apiUrl = authApiBaseUrl + apiEndpoint.authEndpoint;  
-      return this.httpClient.post<AuthenticatedResponse>(apiUrl, loginModel, {
+      return this.httpClient.post<AuthenticatedResponse>(apiUrl, JSON.stringify(loginModel), {
         headers: new HttpHeaders({ 
           "Content-Type": "application/json"
         })
-      }).pipe()    
+      }).pipe(
+       catchError((error: HttpErrorResponse) => {
+        console.log(error.statusText);
+        throw new Error(error.error);
+      }));  
   }
 
   logout() {
@@ -46,7 +50,7 @@ export class AuthenticationService {
 
   isLoggedIn() {
     let authToken = this.getBearerToken();
-    if (authToken === " " || authToken === undefined) {
+    if (authToken === "" || authToken === undefined) {
       return false;
     }
     else {

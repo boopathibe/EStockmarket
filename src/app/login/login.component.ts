@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticatedResponse } from '../models/auth-response-model';
 import { LoginModel } from '../models/login-model';
@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   credentials: LoginModel = {userName:'', password:''};
   invalidLogin: boolean | undefined;
   errorMessage?: string;
+  submitted?: boolean;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authenticationService: AuthenticationService) {
   }
@@ -28,29 +29,36 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  get formControl(): { [key: string]: AbstractControl } {
+    return this.loginForm.controls;
+  }
+  
   login() {
+    if (this.loginForm.invalid) {
+      this.submitted = true;      
+      this.errorMessage = undefined;
+      return;
+    }
     this.errorMessage = undefined;
+    this.submitted = false;
     this.router.navigate(["/landing"]);
     const credentials = {
       'userName' :  this.loginForm.value.userName,
       'password' : this.loginForm.value.password
     }
     
-    this.authenticationService.login(credentials)
-      .subscribe({
-        next: (response: AuthenticatedResponse) => {
-          const token = response.token;
-          this.authenticationService.setBearerToken(token);
-          localStorage.setItem("jwt", token); 
-          this.invalidLogin = false; 
-          this.router.navigate(["/landing"]);
-        },
-        error: ((error: HttpErrorResponse) => {
-          this.invalidLogin = true
-          console.log(error.statusText);
-          this.errorMessage = error.statusText;
-          throw new Error(error.error);
-      })
-    });
+    this.authenticationService.login(credentials).
+        subscribe((response: AuthenticatedResponse) => {
+          if (response.statusCode === 200) {
+            this.authenticationService.setBearerToken(response.token);
+            this.invalidLogin = false; 
+            this.router.navigate(["/landing"]);
+            return;
+          } else if (response.statusCode === 401) {
+            this.errorMessage = "Invalid user details";
+            return;
+          }
+          this.errorMessage = "Error occurred";
+        });
   }
 }
