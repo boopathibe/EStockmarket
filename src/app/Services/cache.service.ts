@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserDetail } from '../models/user-detail';
+import { LoginModel } from '../models/login-model';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { UserDetail } from '../models/user-detail';
 export class CacheService {
 
   private bearerToken!: string;
-  private userDetail: UserDetail | undefined;
+  private loginModel: LoginModel | undefined;
   
   constructor() { }
 
@@ -19,16 +19,16 @@ export class CacheService {
     return this.bearerToken
   }
 
-  setLoggedInUser(userDetail: UserDetail) {
-    this.userDetail = userDetail;
+  setLoggedInUser(loginModel: LoginModel) {
+    this.loginModel = loginModel;
   }
 
-  getLoggedInUser(): UserDetail | undefined {
-    return this.userDetail;
+  getLoggedInUser(): LoginModel | undefined {
+    return this.loginModel;
   }
 
   clear() {
     this.bearerToken = "";
-    this.userDetail = undefined;
+    this.loginModel = undefined;
   }
 }

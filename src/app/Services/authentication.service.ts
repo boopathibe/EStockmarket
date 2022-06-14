@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
 import { CacheService } from './cache.service';
-import { HttpClient } from '@angular/common/http'
-import { UserDetail } from '../models/user-detail';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
+import { LoginModel } from '../models/login-model';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
+import { AuthenticatedResponse } from '../models/auth-response-model';
+import { apiEndpoint, authApiBaseUrl } from '../common/constant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private httpclient: HttpClient, private cacheService: CacheService, private router: Router) { }
+  constructor(private httpClient: HttpClient, private cacheService: CacheService, private router: Router) { }
 
-  login(userDetail: UserDetail): Observable<string> {
-    // add api authentication logic
-    return of("token");
+  login(loginModel: LoginModel): Observable<AuthenticatedResponse> {
+    const apiUrl = authApiBaseUrl + apiEndpoint.authEndpoint;  
+      return this.httpClient.post<AuthenticatedResponse>(apiUrl, loginModel, {
+        headers: new HttpHeaders({ 
+          "Content-Type": "application/json"
+        })
+      }).pipe()    
   }
 
   logout() {
@@ -30,11 +36,11 @@ export class AuthenticationService {
     return this.cacheService.getBearerToken();
   }
 
-  setLoggedInUser(userDetail: UserDetail) {
-    this.cacheService.setLoggedInUser(userDetail);
+  setLoggedInUser(loginModel: LoginModel) {
+    this.cacheService.setLoggedInUser(loginModel);
   }
 
-  getLoggedInUser(): UserDetail | undefined {
+  getLoggedInUser(): LoginModel | undefined {
     return this.cacheService.getLoggedInUser();
   }
 

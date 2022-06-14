@@ -1,7 +1,9 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserDetail } from '../models/user-detail';
+import { AuthenticatedResponse } from '../models/auth-response-model';
+import { LoginModel } from '../models/login-model';
 import { AuthenticationService } from '../Services/authentication.service';
 
 @Component({
@@ -12,30 +14,43 @@ import { AuthenticationService } from '../Services/authentication.service';
 export class LoginComponent implements OnInit {
 
   loginForm!: FormGroup;
+  credentials: LoginModel = {userName:'', password:''};
+  invalidLogin: boolean | undefined;
+  errorMessage?: string;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      userId: ["", Validators.required],
+      userName: ["", Validators.required],
       password: ["", Validators.required]
     });
   }
 
   login() {
+    this.errorMessage = undefined;
     this.router.navigate(["/landing"]);
-    const user = new UserDetail();
-    user.userId = this.loginForm.value.userId;
-    user.password = this.loginForm.value.password;
-
-    // add login api call here 
-
-    // this.authenticationService.login(user)
-    //   .subscribe((data: any) => {
-    //     //console.log(data);
-    //     this.authenticationService.setBearerToken(data.token);
-    //     this.router.navigate(["/landing"]);
-    //   });
+    const credentials = {
+      'userName' :  this.loginForm.value.userName,
+      'password' : this.loginForm.value.password
+    }
+    
+    this.authenticationService.login(credentials)
+      .subscribe({
+        next: (response: AuthenticatedResponse) => {
+          const token = response.token;
+          this.authenticationService.setBearerToken(token);
+          localStorage.setItem("jwt", token); 
+          this.invalidLogin = false; 
+          this.router.navigate(["/landing"]);
+        },
+        error: ((error: HttpErrorResponse) => {
+          this.invalidLogin = true
+          console.log(error.statusText);
+          this.errorMessage = error.statusText;
+          throw new Error(error.error);
+      })
+    });
   }
 }

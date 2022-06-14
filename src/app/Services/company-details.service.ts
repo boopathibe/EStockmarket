@@ -76,7 +76,6 @@ export class CompanyDetailsService {
       throw new Error(error.error);
     }));
   }
-
   private getAllCompanyDetails(companyDetails: CompanyResponse[]): Company[] | undefined {
     if (companyDetails) {
       this.companyList = [];
