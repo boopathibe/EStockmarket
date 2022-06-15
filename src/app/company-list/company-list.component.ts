@@ -25,11 +25,12 @@ export class CompanyListComponent implements OnInit {
   getCompanyDetailLists() {
     this.companyDetailsService.get().
       subscribe((companyList: Company[] | undefined) => {
+        this.companyList = [];
         if (companyList !== undefined && companyList.length > 0) {
           this.companyList = companyList;
           return;
         }
-        this.errorMessage = "No company registered yet!!";
+        this.errorMessage = "No company registered yet!!";        
         return;
       });
   }

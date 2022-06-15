@@ -17,11 +17,12 @@ export class StockDetailsService {
     // add token into header
     var token = this.authenticationService.getBearerToken();
     companyCode = companyCode.toUpperCase();
-    const sDate = this.datePipe.transform(startDate, "yyyy-MM-dd");
-    const eDate = this.datePipe.transform(endDate, "yyyy-MM-dd");
     const apiUrl = stockApiBaseUrl + apiEndpoint.getCompanyStockEndpoint + "/" + companyCode + "/" + startDate + "/" + endDate;
-    const companySearchDetailResponse = this.httpClient.get<CompanySearchDetail>(apiUrl).
-      pipe(map(
+    const companySearchDetailResponse = this.httpClient.get<CompanySearchDetail>(apiUrl, {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  }).pipe(map(
         (companyDetails: CompanySearchDetail) => {
           return this.getCompanyStockDetails(companyDetails, companyCode);
         }),

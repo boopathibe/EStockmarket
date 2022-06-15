@@ -39,8 +39,6 @@ export class CompanyDetailsService {
   }
 
   get(): Observable<Company[] | undefined> {
-    // add token into header
-    var token = this.authenticationService.getBearerToken();
     const apiUrl = companyApiBaseUrl + apiEndpoint.getAllCompanyEndpoint;
     const companyResponse = this.httpClient.get<CompanyResponse[]>(apiUrl).
       pipe(map(
@@ -54,8 +52,6 @@ export class CompanyDetailsService {
   }
 
   getById(companyCode: string): Observable<Company | undefined> {
-    // add token into header
-    var token = this.authenticationService.getBearerToken();
     companyCode = companyCode.toUpperCase();
     const apiUrl = companyApiBaseUrl + apiEndpoint.getCompanyEndpoint + "/" + companyCode;
     const companyResponse = this.httpClient.get<CompanyResponse>(apiUrl).
