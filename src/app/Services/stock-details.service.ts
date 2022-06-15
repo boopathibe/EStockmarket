@@ -15,7 +15,7 @@ export class StockDetailsService {
 
   getById(companyCode: string, startDate: Date, endDate: Date): Observable<CompanySearchDetail> {
     // add token into header
-    // var token = this.authenticationService.getBearerToken();
+    var token = this.authenticationService.getBearerToken();
     companyCode = companyCode.toUpperCase();
     const apiUrl = stockApiBaseUrl + apiEndpoint.getCompanyStockEndpoint + "/" + companyCode + "/" + startDate + "/" + endDate;
     const companySearchDetailResponse = this.httpClient.get<CompanySearchDetail>(apiUrl, {
