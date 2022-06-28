@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/87a29aeb-9832-4fbc-a529-0b56f797dbbf/microsoft.web/sites/subscriptions/87a29aeb-9832-4fbc-a529-0b56f797dbbf/resourceGroups/EStockMarketRG/providers/Microsoft.Web/sites/UIEStockAppService",
+    "appService.deploySubpath": "dist\\EStockMarketApplication"
+}
