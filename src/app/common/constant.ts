@@ -8,6 +8,6 @@ export const apiEndpoint = {
     authEndpoint: '/auth/login'
 };
 
-export const companyApiBaseUrl = "https://apigatewayappservice.azurewebsites.net";
-export const stockApiBaseUrl = "https://apigatewayappservice.azurewebsites.net";
-export const authApiBaseUrl = "https://apigatewayappservice.azurewebsites.net"
+export const companyApiBaseUrl = "https://estockapigatewayappservice.azurewebsites.net";
+export const stockApiBaseUrl = "https://estockapigatewayappservice.azurewebsites.net";
+export const authApiBaseUrl = "https://estockapigatewayappservice.azurewebsites.net"
